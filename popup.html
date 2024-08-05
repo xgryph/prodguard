@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AWS Console Warning Settings</title>
+  <style>
+    body { width: 300px; padding: 10px; }
+    textarea, input[type="text"] { width: 100%; margin-bottom: 10px; }
+    .help-text { font-size: 12px; color: #666; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Account Numbers to Watch</h2>
+  <div class="help-text">Enter one account number per line. Hyphens are optional.</div>
+  <textarea id="accountNumbers" placeholder="Enter account numbers, one per line"></textarea>
+  <h2>Warning Message</h2>
+  <input type="text" id="warningMessage" placeholder="Enter warning message">
+  <br>
+  <button id="save">Save</button>
+  <script src="popup.js"></script>
+</body>
+</html>
