@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Load saved account numbers and warning message
   chrome.storage.sync.get(['accountNumbers', 'warningMessage'], function(result) {
     textarea.value = result.accountNumbers || '';
-    warningMessageInput.value = result.warningMessage || '**WARNING: You are on a production AWS account!**';
+    warningMessageInput.value = result.warningMessage || 'WARNING: You are using a production AWS account!';
   });
 
   // Save account numbers and warning message
