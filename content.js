@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const BANNER_STYLE = `
   width: 100%;
   background-color: red;
@@ -11,6 +12,7 @@ const BANNER_STYLE = `
   left: 0;
   z-index: 1000000;
   font-family: var(--font-family-base-4om3hr, "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif);
+  transition: bottom 0.3s ease-in-out;
 `;
 
 function createBanner(id, position, message) {
@@ -25,11 +27,54 @@ function createBanner(id, position, message) {
   return banner;
 }
 
-function addWarningBanners(message) {
+function setupBottomBannerInteraction(banner) {
+  let timeoutId;
+  let isHidden = false;
+
+  banner.addEventListener('mouseenter', () => {
+    clearTimeout(timeoutId);
+    if (!isHidden) {
+      isHidden = true;
+      banner.style.setProperty('bottom', `-${banner.offsetHeight}px`);
+      timeoutId = setTimeout(() => {
+        isHidden = false;
+        banner.style.setProperty('bottom', '0');
+      }, 5000);
+    }
+  });
+}
+
+function addFlickerEffect(element) {
+  let isFlickering = false;
+
+  function flicker() {
+    if (isFlickering) return;
+
+    isFlickering = true;
+    let opacity = 1;
+    const flickerInterval = setInterval(() => {
+      opacity = opacity === 1 ? 0.3 : 1;
+      element.style.opacity = opacity;
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(flickerInterval);
+      element.style.opacity = 1;
+      isFlickering = false;
+    }, 1000);
+  }
+
+  setInterval(flicker, 30000);
+}
+
+function addWarningBanners(message, enableFlicker) {
   // Top banner
   const topBanner = createBanner('aws-account-warning-banner-top', 'top', message);
   if (topBanner) {
     document.body.insertBefore(topBanner, document.body.firstChild);
+    if (enableFlicker) {
+      addFlickerEffect(topBanner);
+    }
 
     // Adjust body padding
     document.body.style.paddingTop = `${parseFloat(getComputedStyle(topBanner).height) + 10}px`;
@@ -61,6 +106,10 @@ function addWarningBanners(message) {
   const bottomBanner = createBanner('aws-account-warning-banner-bottom', 'bottom', message);
   if (bottomBanner) {
     document.body.appendChild(bottomBanner);
+    setupBottomBannerInteraction(bottomBanner);
+    if (enableFlicker) {
+      addFlickerEffect(bottomBanner);
+    }
   }
 }
 
@@ -74,12 +123,13 @@ function checkAccountNumber() {
   if (accountNumberSpan) {
     const accountNumber = accountNumberSpan.textContent.trim();
 
-    chrome.storage.sync.get(['accountNumbers', 'warningMessage'], (result) => {
+    chrome.storage.sync.get(['accountNumbers', 'warningMessage', 'enableFlicker'], (result) => {
       const watchList = result.accountNumbers ? result.accountNumbers.split('\n') : [];
       const message = result.warningMessage || 'WARNING: You are on a production AWS account!';
+      const enableFlicker = result.enableFlicker || false;
 
       if (watchList.includes(accountNumber)) {
-        addWarningBanners(message);
+        addWarningBanners(message, enableFlicker);
       }
     });
   }

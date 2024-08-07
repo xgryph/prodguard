@@ -8,8 +8,12 @@
   <div class="container">
     <h1>Prod Guard Settings</h1>
     <div class="form-group">
-      <label for="accountNumbers">Account Numbers to Watch:</label>
+      <label for="accountNumbers">Production Account Numbers:</label>
       <textarea id="accountNumbers" rows="5" placeholder="Enter one account number per line. Hyphens are optional."></textarea>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" id="enableFlicker">
+      <label for="enableFlicker" style="display: inline-block; margin-left: 5px;">Enable Warning Flicker</label>
     </div>
     <div class="form-group">
       <label for="warningMessage">Warning Message:</label>
