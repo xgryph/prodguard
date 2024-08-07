@@ -125,6 +125,6 @@ If you encounter any issues or have questions about Prod Guard, please:
 
 1. Check the existing GitHub issues to see if your problem has already been reported.
 2. If not, open a new GitHub issue with a clear description of the problem, steps to reproduce it, and your environment details (Chrome version, OS, etc.).
-3. For security-related issues, please do not open a GitHub issue. Instead, email [your security contact email] with the details.
+3. For security-related issues, please do not open a GitHub issue. Instead, email xgryph@gmail.com with the details.
 
 I appreciate your feedback and will do my best to address your concerns in a timely manner.
