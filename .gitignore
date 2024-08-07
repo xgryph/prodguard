@@ -1,3 +1,5 @@
 .history/
 .DS_Store
 Archive.zip
+prod-guard.zip
+node_modules/
