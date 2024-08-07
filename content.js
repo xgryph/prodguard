@@ -14,11 +14,13 @@ const BANNER_STYLE = `
 `;
 
 function createBanner(id, position, message) {
-  if (document.getElementById(id)) return;
+  if (document.getElementById(id)) {
+    return null; // Return null if the banner already exists
+  }
 
   const banner = document.createElement('div');
   banner.id = id;
-  banner.style.cssText = BANNER_STYLE + `${position}: 0;`;
+  banner.style.cssText = `${BANNER_STYLE}${position}: 0;`;
   banner.textContent = message;
   return banner;
 }
@@ -28,9 +30,9 @@ function addWarningBanners(message) {
   const topBanner = createBanner('aws-account-warning-banner-top', 'top', message);
   if (topBanner) {
     document.body.insertBefore(topBanner, document.body.firstChild);
-    
+
     // Adjust body padding
-    document.body.style.paddingTop = (parseFloat(getComputedStyle(topBanner).height) + 10) + 'px';
+    document.body.style.paddingTop = `${parseFloat(getComputedStyle(topBanner).height) + 10}px`;
 
     // Adjust AWS navigation header
     const awsNavHeader = document.querySelector('#awsc-nav-header');
@@ -67,15 +69,15 @@ function checkAccountNumber() {
   if (!headerElement) return;
 
   const accountNumberSpan = Array.from(headerElement.querySelectorAll('span'))
-    .find(span => /^\d{4}-\d{4}-\d{4}$/.test(span.textContent.trim()));
+    .find((span) => /^\d{4}-\d{4}-\d{4}$/.test(span.textContent.trim()));
 
   if (accountNumberSpan) {
     const accountNumber = accountNumberSpan.textContent.trim();
-    
-    chrome.storage.sync.get(['accountNumbers', 'warningMessage'], function(result) {
+
+    chrome.storage.sync.get(['accountNumbers', 'warningMessage'], (result) => {
       const watchList = result.accountNumbers ? result.accountNumbers.split('\n') : [];
       const message = result.warningMessage || 'WARNING: You are on a production AWS account!';
-      
+
       if (watchList.includes(accountNumber)) {
         addWarningBanners(message);
       }

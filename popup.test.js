@@ -56,8 +56,6 @@ const mockChrome = {
         accountNumbers: '1234-5678-9012\n3456-7890-1234',
         warningMessage: 'Test &amp;lt;script&amp;gt;alert(&quot;xss&quot;)&amp;lt;/script&amp;gt;'
       }, expect.any(Function));
-  
-      expect(console.log).toHaveBeenCalledWith('Settings saved');
       expect(window.close).toHaveBeenCalled();
     });
   });

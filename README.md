@@ -38,6 +38,10 @@ Prod Guard is a Chrome extension that adds a warning banner for specific AWS acc
 2. Run `npm install` to install dependencies
 3. Make changes to the source files as needed
 4. Run `npm test` to run the test suite
+5. Run `npm run lint` to check for linting errors
+6. Run `npm run lint:fix` to automatically fix linting errors where possible
+
+Note: If you're using VS Code with the ESLint extension, linting errors will be highlighted in your code, and many can be automatically fixed on save.
 
 ## Packaging for Chrome Web Store
 
