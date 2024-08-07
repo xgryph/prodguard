@@ -11,6 +11,11 @@ Prod Guard is a Chrome extension that adds a warning banner for specific AWS acc
 
 ## Installation
 
+You can find this extension in the chrome web store here: 
+https://chrome.google.com/webstore/detail/pniglgalgpbineeaplglmabhmoicehfn
+
+or
+
 1. Clone this repository or download the source code.
 2. Open Chrome and navigate to `chrome://extensions/`.
 3. Enable "Developer mode" in the top right corner.
