@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const textarea = document.getElementById('accountNumbers');
   const warningMessageInput = document.getElementById('warningMessage');
   const saveButton = document.getElementById('save');
+  const enableFlicker = document.getElementById('enableFlicker');
 
   // Load saved account numbers and warning message
-  chrome.storage.sync.get(['accountNumbers', 'warningMessage'], (result) => {
+  chrome.storage.sync.get(['accountNumbers', 'warningMessage', 'enableFlicker'], (result) => {
+    enableFlicker.checked = result.enableFlicker || false;
     textarea.value = result.accountNumbers || '';
     warningMessageInput.value = result.warningMessage || 'WARNING: You are using a production AWS account!';
   });
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.set({
       accountNumbers: formattedNumbers,
       warningMessage: sanitizedMessage,
+      enableFlicker: enableFlicker.checked,
     }, () => {
       // Update the textarea with the formatted account numbers
       textarea.value = formattedNumbers;
