@@ -33,6 +33,7 @@ or
 
 - `manifest.json`: Extension manifest file
 - `popup.html`: HTML for the extension popup
+- `popup.css`: CSS for the extension popup
 - `popup.js`: JavaScript for the popup functionality
 - `content.js`: Content script that runs on AWS console pages
 - `icon16.png`, `icon32.png`, `icon48.png`, `icon128.png`: Extension icons (not provided in the given files)
