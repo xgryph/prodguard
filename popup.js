@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/&/g, '&amp;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(/"/g, '&quot;');
 
     chrome.storage.sync.set({
       accountNumbers: formattedNumbers,
