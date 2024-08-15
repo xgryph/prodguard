@@ -1,8 +1,8 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 const BANNER_STYLE = `
   width: 100%;
-  background-color: red;
-  color: white;
   text-align: center;
   padding: 10px;
   font-size: 18px;
@@ -16,14 +16,27 @@ const BANNER_STYLE = `
 `;
 
 function createBanner(id, position, message) {
+  let bannerStyle = BANNER_STYLE;
+
   if (document.getElementById(id)) {
     return null; // Return null if the banner already exists
   }
 
+  if (message.meta.bgcolor) {
+    bannerStyle += `background-color: ${message.meta.bgcolor};`;
+  } else {
+    bannerStyle += 'background-color: red;';
+  }
+  if (message.meta.fgcolor) {
+    bannerStyle += `color: ${message.meta.fgcolor};`;
+  } else {
+    bannerStyle += 'color: white;';
+  }
+
   const banner = document.createElement('div');
   banner.id = id;
-  banner.style.cssText = `${BANNER_STYLE}${position}: 0;`;
-  banner.textContent = message;
+  banner.style.cssText = `${bannerStyle}${position}: 0;`;
+  banner.textContent = message.text;
   return banner;
 }
 
@@ -68,6 +81,8 @@ function addFlickerEffect(element) {
 }
 
 function addWarningBanners(message, enableFlicker) {
+  message = decomposeTemplate(renderTemplate(message, getTemplateVars()));
+
   // Top banner
   const topBanner = createBanner('aws-account-warning-banner-top', 'top', message);
   if (topBanner) {
@@ -111,6 +126,141 @@ function addWarningBanners(message, enableFlicker) {
       addFlickerEffect(bottomBanner);
     }
   }
+}
+
+function decomposeTemplate(template) {
+  const parts = {
+    text: '',
+    meta: {},
+  };
+
+  let currentPart = '';
+  let isMetadata = false;
+  let currentMetaKey = '';
+  let currentMetaValue = '';
+  let inQuote = false;
+  let quoteChar = '';
+
+  for (let i = 0; i < template.length; i++) {
+    if (template[i] === '@' && template[i + 1] === '@') {
+      currentPart += '@';
+      i++; // Skip the next '@'
+    } else if (template[i] === '@' && !isMetadata) {
+      isMetadata = true;
+      parts.text += currentPart;
+      currentPart = '';
+    } else if (isMetadata && (template[i] === ' ' || i === template.length - 1) && !inQuote) {
+      if (i === template.length - 1 && template[i] !== ' ') {
+        currentMetaValue += template[i];
+      }
+      parts.meta[currentMetaKey] = currentMetaValue;
+      isMetadata = false;
+      currentMetaKey = '';
+      currentMetaValue = '';
+    } else if (isMetadata && template[i] === '=' && !inQuote) {
+      currentMetaKey = currentPart.trim();
+      currentPart = '';
+    } else if (isMetadata && (template[i] === "'" || template[i] === '"') && !inQuote) {
+      inQuote = true;
+      quoteChar = template[i];
+    } else if (isMetadata && template[i] === quoteChar && inQuote) {
+      inQuote = false;
+      parts.meta[currentMetaKey] = currentMetaValue;
+      isMetadata = false;
+      currentMetaKey = '';
+      currentMetaValue = '';
+      i++; // Skip the space after the closing quote
+    } else if (isMetadata) {
+      if (currentMetaKey) {
+        currentMetaValue += template[i];
+      } else {
+        currentPart += template[i];
+      }
+    } else {
+      currentPart += template[i];
+    }
+  }
+
+  parts.text += currentPart.trim();
+  return parts;
+}
+
+function escapeHTML(str) {
+  return str.replace(
+    /[&<>'"]/g,
+    (tag) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;',
+    }[tag]),
+  );
+}
+
+function evaluateCondition(condition, vars) {
+  const [left, operator, ...rightParts] = condition.split(/\s+/);
+  const right = rightParts.join(' '); // Join back the rest in case of a space in the value
+  const leftValue = vars[left] !== undefined ? vars[left] : left;
+  const rightValue = right.replace(/['"]/g, ''); // Remove quotes if present
+
+  switch (operator) {
+    case '==': return leftValue == rightValue;
+    case '!=': return leftValue != rightValue;
+    case '>': return leftValue > rightValue;
+    case '<': return leftValue < rightValue;
+    case '>=': return leftValue >= rightValue;
+    case '<=': return leftValue <= rightValue;
+    default: return false;
+  }
+}
+
+function renderTemplate(template, vars) {
+  let result = template;
+
+  // Handle if-elseif-else statements
+  result = result.replace(/\{\{\s*if\s+(.+?)\s*\}\}([\s\S]*?)\{\{\s*fi\s*\}\}/g, (match, condition, content) => {
+    const parts = content.split(/\{\{\s*(else?if\s+.+?|else)\s*\}\}/);
+    let conditionMet = evaluateCondition(condition, vars);
+    if (conditionMet) {
+      return renderTemplate(parts[0], vars);
+    }
+    for (let i = 1; i < parts.length; i++) {
+      const elseIfMatch = parts[i].match(/^elseif\s+(.+)$/);
+      if (elseIfMatch) {
+        conditionMet = evaluateCondition(elseIfMatch[1], vars);
+        if (conditionMet) {
+          return renderTemplate(parts[i + 1], vars);
+        }
+      } else if (parts[i].trim() === 'else') {
+        return renderTemplate(parts[i + 1], vars);
+      }
+    }
+    return '';
+  });
+
+  // Handle variable replacements
+  result = result.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, key) => {
+    if (key in vars) {
+      return escapeHTML(String(vars[key]));
+    }
+    return match;
+  });
+
+  return result;
+}
+
+function getTemplateVars() {
+  const vars = {};
+
+  const accountLabel = document.querySelector('[aria-controls="menu--account"]');
+  const accountNumberSpan = Array.from(document.querySelector('header').querySelectorAll('span'))
+    .find((span) => /^\d{4}-\d{4}-\d{4}$/.test(span.textContent.trim()));
+
+  vars.accountName = accountLabel ? accountLabel.getAttribute('aria-label') : 'Unknown';
+  vars.accountNumber = accountNumberSpan ? accountNumberSpan.textContent.trim() : 'Unknown';
+
+  return vars;
 }
 
 function checkAccountNumber() {

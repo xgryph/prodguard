@@ -8,6 +8,7 @@ Prod Guard is a Chrome extension that adds a warning banner for specific AWS acc
 - Customizable list of AWS account numbers to watch
 - Customizable warning message
 - Persistent storage of settings across browser sessions
+- Template system
 
 ## Installation
 
@@ -28,6 +29,31 @@ or
 3. Customize the warning message if desired.
 4. Click "Save" to apply the settings.
 5. Browse the AWS Management Console. If you access an account matching one of the specified numbers, warning banners will appear.
+
+### Template System
+
+You can use a simple template system in your warning message for dynamic content:
+
+- Use `{{variableName}}` to insert dynamic values.
+- Use `{{if condition}}...{{elseif condition}}...{{else}}...{{fi}}` for conditional content.
+
+Available variables:
+- `{{accountName}}`: The name of the current AWS account
+- `{{accountNumber}}`: The number of the current AWS account
+
+Example template:
+```
+Warning: You are on {{accountName}} ({{accountNumber}})
+{{if accountNumber == '1234-5678-9012'}}This is a Production account!{{else}}This is a non-Production account.{{fi}}
+```
+
+### Customizing Banner Colors
+
+You can customize the banner colors using special tags in your warning message:
+
+```
+@bgcolor="red" @fgcolor="white" Your warning message here
+```
 
 ## Files
 

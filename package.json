@@ -1,6 +1,6 @@
 {
   "name": "prodguard",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Prod Guard is a Chrome extension that adds a warning banner for specific AWS account numbers when browsing the AWS Management Console. This helps users quickly identify when they are working in production environments.",
   "main": "content.js",
   "scripts": {

@@ -22,6 +22,8 @@ document.body.innerHTML = `
   <input id="warningMessage" />
   <input id="enableFlicker" type="checkbox" />
   <button id="save"></button>
+  <a id="more-info"></a>
+  <a id="hide-more-info"></a>
 `;
 
 // Mock window.close
