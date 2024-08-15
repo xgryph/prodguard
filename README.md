@@ -35,7 +35,7 @@ or
 You can use a simple template system in your warning message for dynamic content:
 
 - Use `{{variableName}}` to insert dynamic values.
-- Use `{{if condition}}...{{else}}...{{fi}}` for conditional content.
+- Use `{{if condition}}...{{elseif condition}}...{{else}}...{{fi}}` for conditional content.
 
 Available variables:
 - `{{accountName}}`: The name of the current AWS account

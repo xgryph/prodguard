@@ -63,3 +63,11 @@ textarea {
 .btn-save:hover {
   background-color: #15619b;
 }
+
+#examples {
+  padding: 0;
+}
+
+#warningMessageHelp {
+  display: none;
+}

@@ -15,9 +15,21 @@
       <input type="checkbox" id="enableFlicker">
       <label for="enableFlicker" style="display: inline-block; margin-left: 5px;">Enable Warning Flicker</label>
     </div>
-    <div class="form-group">
-      <label for="warningMessage">Warning Message:</label>
-      <input type="text" id="warningMessage" placeholder="Enter warning message">
+    <div class="form-group" id="warningMessageGroup">
+      <label for="warningMessage">Warning Message: <a href="#" id="more-info">More Info</a></label>
+      <textarea id="warningMessage" rows="5" placeholder="Enter warning message."></textarea>
+    </div>
+    <div class="form-group" id="warningMessageHelp">
+      <p><strong>Variables:</strong> {{accountNumber}}, {{accountName}}</p>
+      <p><strong>Logic:</strong> {{if}}, {{elseif}}, {{else}}, {{fi}}</p>
+      <p><strong>Colors:</strong> @bgcolor, @fgcolor</p>
+      <p>Examples:</p>
+      <ul id="examples">
+        <li><code>{{if accountNumber == '1234-5678-9012'}} Master Account {{else}} Prod Account {{fi}} </code></li>
+        <li><code>@bgcolor='orange' Reminder: Your logged into {{accountName}} </code></li>
+        <li><code>{{if accountNumber == '1234-5678-9012'}} @bgcolor='orange' {{fi}} Warning - Prod Account </code></li>
+      </ul>
+      <p><a href="#" id="hide-more-info">Hide Help</a></p>
     </div>
     <button id="save" class="btn-save">Save</button>
   </div>

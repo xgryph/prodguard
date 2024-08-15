@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     warningMessageInput.value = result.warningMessage || 'WARNING: You are using a production AWS account!';
   });
 
+  document.getElementById('more-info').addEventListener('click', () => {
+    document.getElementById('warningMessageGroup').style.display = 'none';
+    document.getElementById('warningMessageHelp').style.display = 'block';
+  });
+
+  document.getElementById('hide-more-info').addEventListener('click', () => {
+    document.getElementById('warningMessageHelp').style.display = 'none';
+    document.getElementById('warningMessageGroup').style.display = 'block';
+  });
+
   // Save account numbers and warning message
   saveButton.addEventListener('click', () => {
     // Format account numbers
