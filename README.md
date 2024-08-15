@@ -44,7 +44,7 @@ Available variables:
 Example template:
 ```
 Warning: You are on {{accountName}} ({{accountNumber}})
-{{if accountNumber == "1234-5678-9012"}}This is a Production account!{{else}}This is a non-Production account.{{fi}}
+{{if accountNumber == '1234-5678-9012'}}This is a Production account!{{else}}This is a non-Production account.{{fi}}
 ```
 
 ### Customizing Banner Colors
